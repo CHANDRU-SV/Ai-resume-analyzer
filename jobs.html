@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="jobs-container">
+        <a class="back-link" href="dashboard.html">&larr; Back to dashboard</a>
+
+        <header class="jobs-header">
+            <p class="eyebrow">Jobs</p>
+            <h1>Find jobs</h1>
+            <p>Search available opportunities and apply when you find a good fit.</p>
+        </header>
+
+        <label class="search-label" for="job-search">Search jobs</label>
+        <input id="job-search" class="job-search" type="search" placeholder="Search by title, company, or location">
+
+        <p id="jobs-message" class="dashboard-message" role="status" aria-live="polite">Loading available jobs...</p>
+        <section id="jobs-list" class="jobs-list" aria-live="polite"></section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/jobs.js"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <div>
+                <p class="eyebrow">Student dashboard</p>
+                <h1>Welcome, <span id="student-name">Student</span></h1>
+                <p id="welcome-message">Your career information in one place.</p>
+            </div>
+            <button id="logout-button" class="button button-secondary" type="button">Logout</button>
+        </header>
+
+        <p id="dashboard-message" class="dashboard-message" role="status" aria-live="polite">Loading your dashboard...</p>
+
+        <section class="dashboard-grid" aria-label="Dashboard overview">
+            <article class="dashboard-card profile-card">
+                <h2>Your profile</h2>
+                <dl id="profile-details" class="profile-details">
+                    <div><dt>Email</dt><dd>Loading...</dd></div>
+                </dl>
+            </article>
+
+            <article class="dashboard-card">
+                <h2>Resume status</h2>
+                <div id="resume-details" class="empty-state">Loading resume information...</div>
+                <a class="button" href="resume.html">Upload Resume</a>
+                <a id="analyze-resume-link" class="button button-secondary" href="resume.html" hidden>Analyze Resume</a>
+            </article>
+
+            <article class="dashboard-card applications-card">
+                <div class="card-heading">
+                    <h2>Recent applications</h2>
+                    <a href="applications.html">View all</a>
+                </div>
+                <div id="applications-list" class="empty-state">Loading applications...</div>
+            </article>
+        </section>
+
+        <nav class="dashboard-actions" aria-label="Student actions">
+            <a class="button" href="resume.html">Upload Resume</a>
+            <a class="button" href="jobs.html">Find Jobs</a>
+            <a class="button" href="applications.html">My Applications</a>
+        </nav>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

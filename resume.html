@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="upload-container">
+        <a class="back-link" href="dashboard.html">&larr; Back to dashboard</a>
+
+        <section class="upload-card" aria-labelledby="upload-title">
+            <p class="eyebrow">Resume</p>
+            <h1 id="upload-title">Upload your resume</h1>
+            <p class="upload-help">Choose a PDF file up to 5 MB. Your resume is stored privately and is only available to your account.</p>
+
+            <form id="resume-form">
+                <label for="resume-file">Resume PDF</label>
+                <input id="resume-file" name="resume" type="file" accept="application/pdf,.pdf" required>
+                <p id="selected-file" class="file-hint">No file selected</p>
+
+                <button id="upload-button" class="button" type="submit">Upload Resume</button>
+            </form>
+
+            <div id="upload-status" class="upload-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section id="analysis-card" class="upload-card analysis-card" hidden aria-labelledby="analysis-title">
+            <p class="eyebrow">Resume analysis</p>
+            <h2 id="analysis-title">Analyze your uploaded resume</h2>
+            <p id="uploaded-resume-name" class="upload-help"></p>
+            <button id="analyze-button" class="button" type="button">Analyze Resume</button>
+            <div id="analysis-status" class="upload-status" role="status" aria-live="polite"></div>
+
+            <div id="analysis-results" class="analysis-results" hidden>
+                <div class="score-display">
+                    <span>Resume score</span>
+                    <strong id="analysis-score"></strong>
+                </div>
+                <div class="analysis-section">
+                    <h3>Skills found</h3>
+                    <p id="skills-found"></p>
+                </div>
+                <div class="analysis-section">
+                    <h3>Missing or recommended skills</h3>
+                    <p id="missing-skills"></p>
+                </div>
+                <div class="analysis-section">
+                    <h3>Suggestions</h3>
+                    <ul id="suggestions-list"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/resume.js"></script>
+</body>
+</html>

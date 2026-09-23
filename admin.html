@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AI Resume Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="admin-container">
+        <header class="dashboard-header">
+            <div>
+                <p class="eyebrow">Administration</p>
+                <h1>Admin Dashboard</h1>
+                <p>View jobs, applications, and student totals.</p>
+            </div>
+            <div class="admin-actions">
+                <button id="refresh-button" class="button button-secondary" type="button">Refresh</button>
+                <button id="logout-button" class="button button-secondary" type="button">Logout</button>
+            </div>
+        </header>
+
+        <p id="admin-message" class="dashboard-message" role="status" aria-live="polite">Loading dashboard data...</p>
+
+        <section class="admin-summary" aria-label="Admin totals">
+            <article class="admin-stat-card">
+                <span>Total Jobs</span>
+                <strong id="total-jobs">—</strong>
+            </article>
+            <article class="admin-stat-card">
+                <span>Total Applications</span>
+                <strong id="total-applications">—</strong>
+            </article>
+            <article class="admin-stat-card">
+                <span>Total Students / Profiles</span>
+                <strong id="total-profiles">—</strong>
+            </article>
+        </section>
+
+        <section class="admin-table-section" aria-labelledby="jobs-heading">
+            <h2 id="jobs-heading">All Jobs</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Salary</th>
+                            <th>Created date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-jobs-body">
+                        <tr><td colspan="5">Loading jobs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="admin-table-section" aria-labelledby="applications-heading">
+            <h2 id="applications-heading">All Applications</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>User ID</th>
+                            <th>Status</th>
+                            <th>Applied date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-applications-body">
+                        <tr><td colspan="4">Loading applications...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Analyzer - Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h1>Create Account</h1>
+        <p>Register as a student</p>
+
+        <input type="text" id="name" placeholder="Enter Name">
+
+        <input type="email" id="email" placeholder="Enter Email">
+
+        <input type="text" id="phone" placeholder="Enter Phone Number">
+
+        <input type="text" id="college" placeholder="Enter College">
+
+        <input type="text" id="department" placeholder="Enter Department">
+
+        <input type="number" id="graduation_year" placeholder="Graduation Year">
+
+        <input type="password" id="password" placeholder="Create Password">
+
+        <button onclick="register()">Register</button>
+
+        <p id="message"></p>
+
+        <p>
+            Already have an account?
+            <a href="login.html">Login</a>
+        </p>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>
