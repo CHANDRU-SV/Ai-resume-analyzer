@@ -4,6 +4,8 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const PREFERRED_GEMINI_MODEL = "gemini-2.5-flash-lite";
+
 type ResumeAnalysis = {
   score: number;
   skills_found: string[];
@@ -113,30 +115,95 @@ async function callGeminiWithRetries(apiKey: string, prompt: string): Promise<Re
   });
 
   const retryDelays = [2000, 4000];
+  let modelListResponse: Response;
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    try {
-      const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": apiKey,
+  try {
+    modelListResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+      headers: { "x-goog-api-key": apiKey },
+    });
+  } catch (error) {
+    console.error(
+      "Gemini model discovery request failed.",
+      error instanceof Error ? error.name : "Unknown error",
+    );
+    return new Response(null, { status: 502 });
+  }
+
+  if (!modelListResponse.ok) {
+    console.error("Gemini model discovery failed with status:", modelListResponse.status);
+    return modelListResponse;
+  }
+
+  const modelList = await modelListResponse.json().catch(() => null);
+  const availableModels = Array.isArray(modelList?.models)
+    ? modelList.models
+      .filter((model: { name?: unknown; supportedGenerationMethods?: unknown }) =>
+        typeof model.name === "string" &&
+        Array.isArray(model.supportedGenerationMethods) &&
+        model.supportedGenerationMethods.includes("generateContent") &&
+        /^models\/gemini-[\w.-]*flash(?:-lite)?(?:-preview(?:-[\w.-]+)?)?$/.test(model.name)
+      )
+      .map((model: { name: string }) => model.name.slice("models/".length))
+    : [];
+
+  const models = [
+    ...availableModels.filter((model: string) => model === PREFERRED_GEMINI_MODEL),
+    ...availableModels.filter((model: string) =>
+      model !== PREFERRED_GEMINI_MODEL && model.includes("flash-lite")
+    ),
+    ...availableModels.filter((model: string) =>
+      model !== PREFERRED_GEMINI_MODEL && !model.includes("flash-lite")
+    ),
+  ];
+
+  if (!models.length) {
+    console.error("Gemini returned no available Flash models supporting generateContent.");
+    return new Response(null, { status: 404 });
+  }
+
+  for (const modelName of models) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey,
+            },
+            body: requestBody,
           },
-          body: requestBody,
-        },
-      );
+        );
 
-      if (response.status !== 503 || attempt === 2) {
+        if (response.ok || response.status === 401 || response.status === 403) {
+          return response;
+        }
+
+        if (response.status === 404) {
+          console.warn(`Gemini model ${modelName} returned 404. Trying another available Flash model.`);
+          break;
+        }
+
+        if ([429, 500, 503].includes(response.status) && attempt < 2) {
+          console.warn(`Gemini model ${modelName} returned ${response.status}. Retrying attempt ${attempt + 2} of 3.`);
+          await delay(retryDelays[attempt]);
+          continue;
+        }
+
+        if ([429, 500, 503].includes(response.status)) {
+          console.warn(`Gemini model ${modelName} remains unavailable. Trying another available Flash model.`);
+          break;
+        }
+
         return response;
+      } catch (error) {
+        console.error(
+          `Gemini request failed for model ${modelName}.`,
+          error instanceof Error ? error.name : "Unknown error",
+        );
+        return new Response(null, { status: 502 });
       }
-
-      console.warn(`Gemini returned 503. Retrying attempt ${attempt + 2} of 3.`);
-      await delay(retryDelays[attempt]);
-    } catch (error) {
-      console.error("Gemini network request failed.", error instanceof Error ? error.name : "Unknown error");
-      return new Response(null, { status: 502 });
     }
   }
 
@@ -145,6 +212,8 @@ async function callGeminiWithRetries(apiKey: string, prompt: string): Promise<Re
 
 function geminiErrorMessage(status: number): string {
   switch (status) {
+    case 404:
+      return "No available Gemini Flash model was found for this API key. Check the Edge Function deployment and Gemini API project access.";
     case 400:
       return "Gemini AI could not process this resume request.";
     case 401:
